@@ -7,7 +7,7 @@ export async function POST(req) {
     const { scanId, technique, phase, parameters } = body;
 
     // Call ML service (Mocked)
-    const mlResponse = await fetch(`${process.env.ML_SERVICE_URL || 'http://localhost:8080'}/mitigate`, {
+    const mlResponse = await fetch(`${process.env.ML_SERVICE_URL || 'http://localhost:8080'}/mitigate/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ scan_id: scanId, technique, phase, parameters })
