@@ -1,0 +1,6 @@
+{
+  "/api/bias/proxy/route": "app/api/bias/proxy/route.js",
+  "/(dashboard)/data-scientist/proxy-variables/page": "app/(dashboard)/data-scientist/proxy-variables/page.js",
+  "/(dashboard)/compliance/page": "app/(dashboard)/compliance/page.js",
+  "/(dashboard)/data-scientist/page": "app/(dashboard)/data-scientist/page.js"
+}

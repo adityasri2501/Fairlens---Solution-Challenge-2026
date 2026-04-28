@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("NEXT_PUBLIC_SUPABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  name        String?
+  role        Role     @default(DATA_SCIENTIST)
+  createdAt   DateTime @default(now())
+  scans       BiassScan[]
+  decisions   ReviewDecision[]
+}
+
+enum Role {
+  DATA_SCIENTIST
+  COMPLIANCE_OFFICER
+  PRODUCT_MANAGER
+  REVIEWER
+}
+
+model Dataset {
+  id            String     @id @default(uuid())
+  name          String
+  description   String?
+  gcsUri        String
+  rowCount      Int?
+  columnCount   Int?
+  uploadedBy    String
+  uploadedAt    DateTime   @default(now())
+  scans         BiassScan[]
+}
+
+model MLModel {
+  id            String     @id @default(uuid())
+  name          String
+  description   String?
+  gcsUri        String
+  framework     String
+  uploadedBy    String
+  uploadedAt    DateTime   @default(now())
+  scans         BiassScan[]
+}
+
+model BiassScan {
+  id                  String        @id @default(uuid())
+  datasetId           String
+  modelId             String?
+  sensitiveFeatures   String[]
+  targetColumn        String
+  status              ScanStatus    @default(PENDING)
+  results             Json?
+  fairnessScore       Float?
+  createdBy           String
+  createdAt           DateTime      @default(now())
+  completedAt         DateTime?
+  dataset             Dataset       @relation(fields: [datasetId], references: [id])
+  model               MLModel?      @relation(fields: [modelId], references: [id])
+  mitigations         Mitigation[]
+  escalations         Escalation[]
+}
+
+enum ScanStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+model Mitigation {
+  id            String          @id @default(uuid())
+  scanId        String
+  technique     MitigationType
+  phase         MitigationPhase
+  parameters    Json?
+  beforeScore   Float?
+  afterScore    Float?
+  appliedBy     String
+  appliedAt     DateTime        @default(now())
+  scan          BiassScan       @relation(fields: [scanId], references: [id])
+}
+
+enum MitigationType {
+  REWEIGHTING
+  SMOTE
+  ADVERSARIAL_DEBIASING
+  FAIRLEARN_CONSTRAINT
+  THRESHOLD_OPTIMIZATION
+  REJECT_OPTION_CLASSIFICATION
+}
+
+enum MitigationPhase {
+  PRE_PROCESSING
+  IN_PROCESSING
+  POST_PROCESSING
+}
+
+model Escalation {
+  id          String            @id @default(uuid())
+  scanId      String
+  caseData    Json
+  reason      String
+  status      EscalationStatus  @default(PENDING)
+  createdAt   DateTime          @default(now())
+  scan        BiassScan         @relation(fields: [scanId], references: [id])
+  decision    ReviewDecision?
+}
+
+enum EscalationStatus {
+  PENDING
+  APPROVED
+  OVERRIDDEN
+  DISMISSED
+}
+
+model ReviewDecision {
+  id            String    @id @default(uuid())
+  escalationId  String    @unique
+  decision      String
+  reasoning     String?
+  reviewerId    String
+  decidedAt     DateTime  @default(now())
+  reviewer      User      @relation(fields: [reviewerId], references: [id])
+  escalation    Escalation @relation(fields: [escalationId], references: [id])
+}
+
+model BiasProfile {
+  id              String    @id @default(uuid())
+  title           String
+  scanId          String
+  generatedBy     String
+  content         Json
+  standardVersion String    @default("IEEE-7003-2024")
+  createdAt       DateTime  @default(now())
+}
