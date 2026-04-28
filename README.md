@@ -41,3 +41,65 @@ FairLens is an Unbiased AI Decision Platform designed to help organizations dete
 
 ## Deployment
 See the provided documentation for Vercel and Cloud Run deployment steps.
+
+## Project Structure
+
+```text
+fairlens/
+├─ .git/                     # Git repository
+├─ .gitignore                # Ignored files (env, node_modules, etc.)
+├─ .env.local                # Local environment variables (kept private)
+├─ app/
+│   ├─ (auth)/
+│   │   └─ login/
+│   │       └─ page.jsx
+│   ├─ (dashboard)/
+│   │   ├─ data-scientist/
+│   │   │   ├─ page.jsx
+│   │   │   ├─ upload/
+│   │   │   │   └─ page.jsx
+│   │   │   ├─ mitigate/
+│   │   │   │   └─ page.jsx
+│   │   │   └─ proxy-variables/
+│   │   │       └─ page.jsx
+│   │   ├─ compliance/
+│   │   │   ├─ page.jsx
+│   │   │   ├─ audit-trail/
+│   │   │   │   └─ page.jsx
+│   │   │   └─ reports/
+│   │   │       └─ page.jsx
+│   │   └─ product-manager/
+│   │       └─ ... (pages)
+│   ├─ api/
+│   │   └─ bias/
+│   │       ├─ scan/
+│   │       │   └─ route.js
+│   │       ├─ mitigate/
+│   │       │   └─ route.js
+│   │       └─ proxy/
+│   │           └─ route.js
+│   ├─ globals.css
+│   └─ layout.jsx
+├─ components/
+│   ├─ layout/
+│   └─ ui/
+├─ lib/
+│   ├─ firebase.js
+│   ├─ firebaseAdmin.js
+│   └─ store/
+│       └─ authStore.js
+├─ prisma/
+│   └─ schema.prisma
+├─ services/
+│   └─ ml/
+│       ├─ Dockerfile
+│       ├─ main.py
+│       ├─ requirements.txt
+│       └─ routers/
+│           ├─ bias_scan.py
+│           ├─ mitigate.py
+│           └─ proxy.py
+├─ package.json
+├─ next.config.mjs
+└─ README.md
+```
