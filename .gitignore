@@ -1,1 +1,8 @@
 node_modules
+.env*
+.next/
+out/
+build/
+*.log
+firebase-debug.log*
+.firebase/
